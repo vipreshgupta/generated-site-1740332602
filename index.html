@@ -1,0 +1,356 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Advanced Personal Finance Dashboard</title>
+  <style>
+    /* Base Styles */
+    body {
+      background-color: #1a1a2e; /* Deep metallic dark navy */
+      color: #e0e0e0; /* Light text for readability */
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden; /* Prevent horizontal scroll */
+    }
+
+    .accent {
+      color: #00ffff; /* Neon blue accents */
+    }
+
+    .button-primary {
+      background-color: #ff5722; /* Vibrant orange for primary buttons */
+      color: #ffffff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .button-primary:hover {
+      background-color: #e64a19;
+    }
+
+    /* Sidebar Styles */
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 250px;
+      height: 100vh;
+      background-color: #2c2c54;
+      padding-top: 20px;
+      z-index: 10;
+    }
+
+    .sidebar nav ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .sidebar nav ul li {
+      padding: 15px 20px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .sidebar nav ul li:hover {
+      background-color: #3f3f74;
+    }
+
+    /* Main Content Styles */
+    .main-content {
+      margin-left: 250px;
+      padding: 20px;
+    }
+
+    /* Grid Layout */
+    .grid-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+    }
+
+    .grid-item {
+      background-color: #393960;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+      position: relative;
+      overflow: hidden;
+    }
+    .grid-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.7);
+    }
+
+    /* Hologram Effect */
+    .hologram {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0.3;
+      background: linear-gradient(135deg, #00ffff, #ff5722, #00ff00);
+      z-index: 1;
+      pointer-events: none; /* Allows interaction with content below */
+    }
+
+    /* Chart Styles */
+    .chart-container {
+      position: relative;
+      z-index: 2;
+    }
+
+    /* AI Assistant Styles */
+    .ai-assistant {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 100;
+    }
+
+    #assistant-btn {
+      background-color: #00ffff;
+      color: #1a1a2e;
+      border: none;
+      padding: 15px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 20px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+      transition: transform 0.3s ease;
+    }
+
+    #assistant-btn:hover {
+      transform: scale(1.1);
+    }
+
+    #assistant-window {
+      position: absolute;
+      bottom: 70px;
+      right: 0;
+      width: 300px;
+      background-color: #393960;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+      display: none; /* Initially hidden */
+    }
+
+    /* Savings Goal Tracker Styles */
+    .savings-goal {
+      background-color: #393960;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+      text-align: center;
+    }
+
+    .progress-bar {
+      background-color: #2c2c54;
+      height: 20px;
+      border-radius: 10px;
+      margin-top: 10px;
+      position: relative;
+    }
+
+    .progress {
+      background-color: #00ffff;
+      height: 100%;
+      border-radius: 10px;
+      width: 0; /* Initial width */
+      transition: width 0.5s ease;
+    }
+
+    /* Wealth Journey Map Styles */
+    .wealth-journey {
+      background-color: #393960;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+      text-align: center;
+    }
+
+    /* Feedback Form Styles */
+    .feedback-form {
+      background-color: #393960;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+      margin-top: 20px;
+    }
+
+    .feedback-form textarea {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 5px;
+      border: none;
+      background-color: #2c2c54;
+      color: #e0e0e0;
+    }
+
+    /* Responsive Styles */
+    @media (max-width: 768px) {
+      .sidebar {
+        display: none; /* Hide sidebar on smaller screens */
+      }
+
+      .main-content {
+        margin-left: 0; /* Remove margin */
+        width: 100%;
+      }
+
+      .grid-container {
+        grid-template-columns: 1fr; /* Single column layout */
+      }
+    }
+    .glowing-text {
+        text-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff, 0 0 30px #00ffff;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <nav>
+      <ul>
+        <li>Dashboard</li>
+        <li>Spending</li>
+        <li>Goals</li>
+        <li>Wealth Journey</li>
+      </ul>
+    </nav>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <h1 class="glowing-text">Financial Control Center</h1>
+
+    <!-- Grid Container for Widgets -->
+    <div class="grid-container">
+      <!-- Grid Item 1: Account Balance -->
+      <div class="grid-item">
+        <div class="hologram"></div>
+        <div class="chart-container">
+          <h2>Account Balance</h2>
+          <p class="accent">$12,345.67</p>
+          <!-- Placeholder for animated chart -->
+          <canvas id="balanceChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Grid Item 2: Spending Breakdown -->
+      <div class="grid-item">
+        <div class="hologram"></div>
+        <div class="chart-container">
+          <h2>Spending Breakdown</h2>
+          <!-- Placeholder for 3D pie chart -->
+          <canvas id="spendingChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Grid Item 3: Savings Goal -->
+      <div class="grid-item savings-goal">
+        <h2>Savings Goal: New Car</h2>
+        <p>Target: $20,000</p>
+        <div class="progress-bar">
+          <div class="progress" id="savingsProgress" style="width: 60%;"></div>
+        </div>
+        <p>60% Complete</p>
+      </div>
+
+      <!-- Grid Item 4: Wealth Journey Map -->
+      <div class="grid-item wealth-journey">
+        <h2>Wealth Journey</h2>
+        <p>Explore your financial growth!</p>
+        <!-- Placeholder for interactive map -->
+        <div id="wealthMap"></div>
+      </div>
+    </div>
+
+    <!-- Feedback Form -->
+    <div class="feedback-form">
+      <h3>We Value Your Feedback</h3>
+      <textarea placeholder="Your comments..."></textarea>
+      <button type="submit" class="button-primary">Submit</button>
+    </div>
+  </div>
+
+  <!-- AI Assistant -->
+  <div class="ai-assistant">
+    <button id="assistant-btn" aria-label="Open AI Assistant">💬</button>
+    <div id="assistant-window" aria-hidden="true">
+      <p>Hello! How can I assist you today?</p>
+      <!-- Placeholder for AI interaction -->
+      <input type="text" id="userInput" placeholder="Ask me anything...">
+      <button class="button-primary" onclick="handleUserInput()">Send</button>
+    </div>
+  </div>
+
+  <script>
+    // AI Assistant Toggle
+    document.getElementById('assistant-btn').addEventListener('click', function() {
+      var window = document.getElementById('assistant-window');
+      window.style.display = window.style.display === 'none' ? 'block' : 'none';
+    });
+
+    // Placeholder for AI interaction
+    function handleUserInput() {
+      var input = document.getElementById('userInput').value;
+      alert('You asked: ' + input + '. This is a placeholder for AI response.');
+      document.getElementById('userInput').value = ''; // Clear input
+    }
+
+    // Placeholder for Chart.js integration
+    // Example: Balance Chart
+    var ctxBalance = document.getElementById('balanceChart').getContext('2d');
+    var balanceChart = new Chart(ctxBalance, {
+      type: 'line',
+      data: {
+        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+        datasets: [{
+          label: 'Balance',
+          data: [12000, 12500, 12300, 12800, 13000, 12345],
+          borderColor: '#00ffff',
+          backgroundColor: 'rgba(0, 255, 255, 0.2)',
+          borderWidth: 2
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          y: {
+            beginAtZero: false
+          }
+        }
+      }
+    });
+
+    // Example: Spending Chart (3D Pie Chart - Placeholder)
+    var ctxSpending = document.getElementById('spendingChart').getContext('2d');
+    var spendingChart = new Chart(ctxSpending, {
+      type: 'pie',
+      data: {
+        labels: ['Food', 'Rent', 'Utilities', 'Entertainment', 'Other'],
+        datasets: [{
+          data: [30, 25, 15, 20, 10],
+          backgroundColor: ['#ff5722', '#00ffff', '#00ff00', '#e0e0e0', '#393960'],
+          hoverOffset: 4
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false
+      }
+    });
+  </script>
+</body>
+</html>
